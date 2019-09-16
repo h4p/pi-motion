@@ -8,7 +8,6 @@ import os
 
 from datetime import date, datetime, timedelta
 from collections import defaultdict
-from hue import HueClass
 from i18n.translator import Translator
 
 exitFlag = 0
@@ -24,9 +23,8 @@ class TelegramBot (threading.Thread):
     CONFIG3      = 6 # Enter Value
     LIST         = 7
     NOTIFICATION = 8 # Enable or disable motion notifications
-    LIGHT        = 9
 
-    def __init__(self, threadID, name, config, logger, hue, pirThread, camThread, queue):
+    def __init__(self, threadID, name, config, logger, pirThread, camThread, queue):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.starttime = time.strftime("%c")
@@ -44,7 +42,6 @@ class TelegramBot (threading.Thread):
         self.network_delay=1.0
         self.config = config
         self.process = 0
-        self.hue = hue
         self.pirThread = pirThread
         self.camThread = camThread
         self.running = 1
@@ -153,23 +150,7 @@ class TelegramBot (threading.Thread):
                               text=text, 
                               reply_markup=reply_markup)
             
-    def doProcessLight(self, update):
-        lightselection = update.message.text.lower()
-        reply_markup = telegram.ReplyKeyboardRemove()
-        if lightselection == self.tr._("on"):
-            self.hue.setMode (HueClass.ON)
-            text = self.tr._("Switch light on")
-        elif lightselection == self.tr._("off"):
-            self.hue.setMode (HueClass.OFF)
-            text = self.tr._("Switch light off")
-        elif lightselection == self.tr._("motion"):
-            self.hue.setMode (HueClass.MOTION)
-            text = self.tr._("Switch light on in case of motion detection")
-        else:
-            text = self.tr._("Sorry, but I don't understand.")
-        self.bot.send_message(chat_id=update.message.chat_id, 
-                              text=text, 
-                              reply_markup=reply_markup)
+
 
     def doProcessEcho(self, update):
         update.message.reply_text(self.tr._("Sorry, but I don't understand."))
@@ -198,8 +179,6 @@ class TelegramBot (threading.Thread):
             self.handleLogout(update)
         elif update.message.text == '/status':
             self.handleStatus(update)
-        elif update.message.text == '/light':
-            self.handleLight(update)
         elif update.message.text == '/photo':
             self.handlePhoto(update)
         elif update.message.text == '/video':
@@ -222,8 +201,6 @@ class TelegramBot (threading.Thread):
             self.doProcessList(update)
         elif self.process == TelegramBot.NOTIFICATION:
             self.doProcessNotification(update)
-        elif self.process == TelegramBot.LIGHT:
-            self.doProcessLight(update)
         else:
             self.doProcessEcho(update)
 
@@ -240,24 +217,10 @@ class TelegramBot (threading.Thread):
                 chatMessage = ""
                 for valueskey,valuesvalue in values.iteritems():
                     chatMessage = chatMessage + "\r\n" + str(valueskey) + ":= " + str(valuesvalue)
-                chatMessage = chatMessage + "\r\n" + self.tr._("Light") + ":= " + str(self.hue.getLightState())
                 update.message.reply_text(self.tr._("Chat") + " " + str(key) + chatMessage)
         else:
             self.loginRequred(update)
 
-    def handleLight(self, update):
-        if self.isLoggedIn(update):
-            self.startProcess (TelegramBot.LIGHT)
-            on_key = telegram.KeyboardButton(text=self.tr._("On"))
-            off_key  = telegram.KeyboardButton(text=self.tr._("Off"))
-            motion_key  = telegram.KeyboardButton(text=self.tr._("Motion"))
-            light_keyboard = [[ on_key, off_key, motion_key ]]
-            reply_markup = telegram.ReplyKeyboardMarkup(light_keyboard)
-            self.bot.send_message(chat_id=update.message.chat_id,
-                                 text=self.tr._("Switch light?"),
-                                 reply_markup=reply_markup)
-        else:
-            self.loginRequred(update)
 
     def handleHelp(self, update):
         update.message.reply_text(self.tr._("I can help youe with your motion sensor.") + "\r\n" +
@@ -265,8 +228,7 @@ class TelegramBot (threading.Thread):
                                   self.tr._("/login - You have to login before you can use me") + "\r\n" + 
                                   self.tr._("/logout - Logout from the motion sensor") + "\r\n" + 
                                   self.tr._("/notification - Enable/disable motion sensor notifications") + "\r\n" + 
-                                  self.tr._("/list - Show motion sensor configuration") + "\r\n" + 
-                                  self.tr._("/light - Switch on/off the light") + "\r\n" + 
+                                  self.tr._("/list - Show motion sensor configuration") + "\r\n" +
                                   self.tr._("/status - Get current status of ther motion sensor") + "\r\n" + 
                                   self.tr._("/restart - In case of problems, you can restart the motion sensor") + "\r\n" + 
                                   self.tr._("/photo - Capture a photo") + "\r\n" + 
@@ -347,7 +309,6 @@ class TelegramBot (threading.Thread):
             self.running = 0
             self.pirThread.quit()
             self.camThread.quit()
-            self.hue.quit()
             sys.exit()
         else:
             self.loginRequred(update)

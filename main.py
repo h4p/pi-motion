@@ -11,8 +11,6 @@ import multiprocessing
 
 from cam import CamThread
 from pir import PirThread
-from hue import HueClass
-from hue import HueTimer
 from bot import TelegramBot
 
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
@@ -36,22 +34,12 @@ logger.info('Init cam')
 cam = CamThread(3, "Camera", config, logger, camQueue, botQueue)
 cam.start()
 
-logger.info('Init hue timer')
-timer = HueTimer("Hue Timer", config, logger)
-timer.start()
-
-logger.info('Init hue')
-hue = HueClass("Hue", timer, config, logger)
-hue.lightOff()
-
-timer.setHue(hue)
-
 logger.info('Init motion sensor')
-pirThread = PirThread(1, "PirThread", config, logger, hue)
+pirThread = PirThread(1, "PirThread", config, logger)
 pirThread.start()
 
 logger.info('Init bot')
-telegramBot = TelegramBot(1, "Bot", config, logger, hue, pirThread, cam, botQueue)
+telegramBot = TelegramBot(1, "Bot", config, logger, pirThread, cam, botQueue)
 telegramBot.start()
 cam.addBot(telegramBot)
 pirThread.addBot(telegramBot)

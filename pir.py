@@ -4,10 +4,9 @@ import RPi.GPIO as GPIO
 
 class PirThread (threading.Thread):
 
-    def __init__(self, threadID, name, config, logger, hue):
+    def __init__(self, threadID, name, config, logger):
         threading.Thread.__init__(self)
         self.threadID = threadID
-        self.hue = hue
         self.name = name
         self.config = config
         self.bot = None
@@ -60,8 +59,4 @@ class PirThread (threading.Thread):
                 self.logger.info("No bot avalable")
             else:
                 self.bot.reportMotionDetection()
-            if self.hue is None:
-                self.logger.info("No hue lamp avalable")
-            else:
-                self.hue.lightOn()
 

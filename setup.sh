@@ -19,9 +19,6 @@ pip install configparser
 echo Install python package "psutil"
 pip install psutil
 
-echo Install python package "qhue"
-pip install qhue
-
 echo Install python package "telegram bot"
 pip install python-telegram-bot
 

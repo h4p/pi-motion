@@ -52,25 +52,7 @@ class CamThread (threading.Thread):
         self.imageeffect       = self.config.get("CAMERA", "image_effect")
         self.awbmode           = self.config.get("CAMERA", "awb_mode")
         self.exposuremode      = self.config.get("CAMERA", "exposure")
-        self.latitude         = float(self.config.get("HUE", "latitude"))
-        self.longitude        = float(self.config.get("HUE", "longitude"))
 
-    def waitForHue(self, seconds):
-        try:
-            waitForHue = 1
-            now = date.today()
-            sunrise, sunset = sun.getSunsetSunrise( now, self.longitude, self.latitude )
-            if sunrise < datetime.datetime.now():
-                waitForHue = 0
-            if sunset < datetime.datetime.now():
-                waitForHue = 1
-            if waitForHue == 1:
-                time.sleep (seconds) 
-        except:
-            print "Exception in user code:"
-            print '-'*60
-            traceback.print_exc(file=sys.stdout)
-            print '-'*60
 
     def run(self):
         self.logger.info('Start ' + self.name)
@@ -94,7 +76,6 @@ class CamThread (threading.Thread):
                 camElement = self.queue.get(True, self.queueTimeout)
                 if camElement.type == "jpg":
                     if self.enabled == "on":
-                        self.waitForHue(5)
                         self.logger.info("Take photo filename " + camElement.filename)
                         camera.capture(str(camElement.filename))
                         finish = time.time() - start
@@ -106,7 +87,6 @@ class CamThread (threading.Thread):
                         self.bot.camHandler(camElement.filename, camElement.chat_id, "dis")
                 elif camElement.type == "h264":
                     if self.enabled == "on":
-                        self.waitForHue(2)
                         # Override camera resolution for video. Telegram will only work with 480x320
                         camera.resolution = (480, 320)
                         self.logger.info("Take video filename: " + camElement.filename + " duration: " + str(self.videoduration))
