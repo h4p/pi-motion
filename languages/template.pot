@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-04-17 13:31+0200\n"
+"POT-Creation-Date: 2019-09-21 21:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: /home/pi/pi-motion/bot.py:69
+#: /home/pi/pi-motion/bot.py:67
 msgid "Motion detected."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:85 /home/pi/pi-motion/bot.py:151
-#: /home/pi/pi-motion/bot.py:169 /home/pi/pi-motion/bot.py:175
+#: /home/pi/pi-motion/bot.py:84 /home/pi/pi-motion/bot.py:151
+#: /home/pi/pi-motion/bot.py:159
 msgid "Sorry, but I don't understand."
 msgstr ""
 
@@ -30,8 +30,8 @@ msgstr ""
 msgid "Login OK"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:101 /home/pi/pi-motion/bot.py:176
-#: /home/pi/pi-motion/bot.py:234
+#: /home/pi/pi-motion/bot.py:101 /home/pi/pi-motion/bot.py:160
+#: /home/pi/pi-motion/bot.py:213
 msgid "If you need support just enter /help"
 msgstr ""
 
@@ -71,167 +71,115 @@ msgstr ""
 msgid "Motion sensor notification disabled"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:159
-msgid "on"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:161
-msgid "Switch light on"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:162
-msgid "off"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:164
-msgid "Switch light off"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:165
-msgid "motion"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:167
-msgid "Switch light on in case of motion detection"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:234
+#: /home/pi/pi-motion/bot.py:213
 msgid "Welcome to the the world's smartest motion tracker."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:239
+#: /home/pi/pi-motion/bot.py:218
 msgid "Bot is up and running since "
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:244
-msgid "Light"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:245
+#: /home/pi/pi-motion/bot.py:223
 msgid "Chat"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:252
-msgid "On"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:253
-msgid "Off"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:254
-msgid "Motion"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:258
-msgid "Switch light?"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:264
+#: /home/pi/pi-motion/bot.py:229
 msgid "I can help youe with your motion sensor."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:265
+#: /home/pi/pi-motion/bot.py:230
 msgid "You can control me by sending these commands:"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:266
+#: /home/pi/pi-motion/bot.py:231
 msgid "/login - You have to login before you can use me"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:267
+#: /home/pi/pi-motion/bot.py:232
 msgid "/logout - Logout from the motion sensor"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:268
+#: /home/pi/pi-motion/bot.py:233
 msgid "/notification - Enable/disable motion sensor notifications"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:269
+#: /home/pi/pi-motion/bot.py:234
 msgid "/list - Show motion sensor configuration"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:270
-msgid "/light - Switch on/off the light"
-msgstr ""
-
-#: /home/pi/pi-motion/bot.py:271
+#: /home/pi/pi-motion/bot.py:235
 msgid "/status - Get current status of ther motion sensor"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:272
+#: /home/pi/pi-motion/bot.py:236
 msgid "/restart - In case of problems, you can restart the motion sensor"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:273
-msgid "/photo - Capture a photo from the camera"
+#: /home/pi/pi-motion/bot.py:237
+msgid "/photo - Capture a photo"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:274
-msgid "/video - Capture a short video from the camera"
+#: /home/pi/pi-motion/bot.py:238
+msgid "/video - Capture a short video"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:281
+#: /home/pi/pi-motion/bot.py:245
 msgid "Photo:"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:284
+#: /home/pi/pi-motion/bot.py:248
 msgid "Video:"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:286
+#: /home/pi/pi-motion/bot.py:250
 msgid "Camera is disabled by configurataion."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:288
+#: /home/pi/pi-motion/bot.py:252
 msgid "Error convertig video file:"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:294
+#: /home/pi/pi-motion/bot.py:258
 msgid "Please wait a moment until the photo is taken"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:301
+#: /home/pi/pi-motion/bot.py:265
 msgid "Please wait a moment. Video capturing will be performed"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:309 /home/pi/pi-motion/bot.py:334
+#: /home/pi/pi-motion/bot.py:273 /home/pi/pi-motion/bot.py:298
 msgid "Yes"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:310 /home/pi/pi-motion/bot.py:335
+#: /home/pi/pi-motion/bot.py:274 /home/pi/pi-motion/bot.py:299
 msgid "No"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:314
+#: /home/pi/pi-motion/bot.py:278
 msgid "Do you want to get notified in case of motion detection?"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:322
+#: /home/pi/pi-motion/bot.py:286
 msgid "Which section of the configuration do you want to inspect?"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:329
+#: /home/pi/pi-motion/bot.py:293
 msgid "Enter your password:"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:339
+#: /home/pi/pi-motion/bot.py:303
 msgid "Do you want to logout?"
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:342
+#: /home/pi/pi-motion/bot.py:306
 msgid "You are not logged in. You don't need to logout."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:346
-msgid "Exit done. Restart will occur now."
+#: /home/pi/pi-motion/bot.py:310
+msgid "Restart will occur now."
 msgstr ""
 
-#: /home/pi/pi-motion/bot.py:387
+#: /home/pi/pi-motion/bot.py:350
 msgid "Login required. Please /login first."
-msgstr ""
-
-#: /home/pi/pi-motion/demo.py:5
-msgid "Hello world!"
 msgstr ""
 
