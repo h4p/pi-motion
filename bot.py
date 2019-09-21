@@ -1,4 +1,5 @@
 import traceback
+import pdb
 import subprocess
 import threading
 import telegram
@@ -73,17 +74,19 @@ class TelegramBot (threading.Thread):
                 updates = self.bot.get_updates( offset=self.offset)
                 for update in updates:
                     now = date.today()
-                    self.chats[update.edited_message.chat_id]['lastupdate'] = now
-                    self.chats[update.edited_message.chat_id]['user'] = update.effective_user.first_name
-                    self.bot.send_chat_action( chat_id=update.edited_message.chat_id,
+                    pdb.set_trace()
+                    self.chats[update.message.chat.id]['lastupdate'] = now
+                    self.chats[update.message.chat.id]['user'] = update.effective_user.first_name
+                    self.bot.send_chat_action( chat_id=update.message.chat_id,
                                                action=telegram.ChatAction.TYPING)
                     self.offset = update.update_id + 1 # Only fetch new updates
-                    if update.edited_message.text is None:
-                        update.edited_message.reply_text(self.tr._("Sorry, but I don't understand."))
+                    if update.message.text is None:
+                        update.message.reply_text(self.tr._("Sorry, but I don't understand."))
                     else:
                         self.handleUpdate(update)
             except:
                 self.logger.error(str(sys.exc_info()))
+                print(traceback.format_exc())
         print "Exiting " + self.name
 
 ###############################################################################
@@ -93,32 +96,32 @@ class TelegramBot (threading.Thread):
 ###############################################################################
 
     def doProcessLogin(self, update):
-        if update.edited_message.text == self.password:
-            update.edited_message.reply_text(self.tr._("Login OK"))
-            update.edited_message.reply_text(self.tr._("If you need support just enter /help"))
-            self.login[update.edited_message.chat.id] = 1
-            self.chats[update.edited_message.chat.id]['login'] = "yes"
-            self.chats[update.edited_message.chat.id]['send_notification'] = 0
+        if update.message.text == self.password:
+            update.message.reply_text(self.tr._("Login OK"))
+            update.message.reply_text(self.tr._("If you need support just enter /help"))
+            self.login[update.message.chat.id] = 1
+            self.chats[update.message.chat.id]['login'] = "yes"
+            self.chats[update.message.chat.id]['send_notification'] = 0
             self.process = 0
         else:
-            update.edited_message.reply_text(self.tr._("Invalid login. Please try again"))
+            update.message.reply_text(self.tr._("Invalid login. Please try again"))
 
     def doProcessLogout(self, update):
-        yesno = update.edited_message.text.lower()
+        yesno = update.message.text.lower()
         if yesno == self.tr._("yes"):
             text = self.tr._("Logout successful")
-            self.login[update.edited_message.chat.id] = 0
-            self.chats[update.edited_message.chat.id]['login'] = "no"
+            self.login[update.message.chat.id] = 0
+            self.chats[update.message.chat.id]['login'] = "no"
         else:
             text = self.tr._("Logout cancelled")
         reply_markup = telegram.ReplyKeyboardRemove()
-        self.bot.send_message(chat_id=update.edited_message.chat.id, 
+        self.bot.send_message(chat_id=update.message.chat.id, 
                               text=text, 
                               reply_markup=reply_markup)
         self.process = 0
 
     def doProcessList(self, update):
-        self.selectedSection = update.edited_message.text
+        self.selectedSection = update.message.text
         if self.existsSection(self.selectedSection):
             text=self.tr._("Configuration values in section ") + self.selectedSection + ":\r\n"
             for option in self.config[self.selectedSection]:  
@@ -131,30 +134,30 @@ class TelegramBot (threading.Thread):
             text = self.tr._("Sorry, invalid section. Enter /list and try again.") 
             reply_markup = telegram.ReplyKeyboardRemove()
             self.process = 0
-        self.bot.send_message(chat_id=update.edited_message.chat.id, 
+        self.bot.send_message(chat_id=update.message.chat.id, 
                               text=text, 
                               reply_markup=reply_markup)
 
     def doProcessNotification(self, update):
-        yesno = update.edited_message.text.lower()
+        yesno = update.message.text.lower()
         reply_markup = telegram.ReplyKeyboardRemove()
         if yesno == self.tr._("yes"):
-            self.chats[update.edited_message.chat.id]['notification'] = yesno
+            self.chats[update.message.chat.id]['notification'] = yesno
             text = self.tr._("Motion sensor notification enabled")
         elif yesno == self.tr._("no"):
-            self.chats[update.edited_message.chat.id]['notification'] = yesno
+            self.chats[update.message.chat.id]['notification'] = yesno
             text = self.tr._("Motion sensor notification disabled")
         else:
             text = self.tr._("Sorry, but I don't understand.")
-        self.bot.send_message(chat_id=update.edited_message.chat.id, 
+        self.bot.send_message(chat_id=update.message.chat.id, 
                               text=text, 
                               reply_markup=reply_markup)
             
 
 
     def doProcessEcho(self, update):
-        update.edited_message.reply_text(self.tr._("Sorry, but I don't understand."))
-        update.edited_message.reply_text(self.tr._("If you need support just enter /help"))
+        update.message.reply_text(self.tr._("Sorry, but I don't understand."))
+        update.message.reply_text(self.tr._("If you need support just enter /help"))
         self.process = 0
 
     def startProcess(self, process):
@@ -167,27 +170,27 @@ class TelegramBot (threading.Thread):
 ###############################################################################
 
     def handleUpdate(self, update):
-        self.logger.info(str(update.edited_message.chat.id) + " " + update.edited_message.text)
-        print str(update.edited_message.chat.id) + " " + update.edited_message.text
-        if   update.edited_message.text == '/start':
+        self.logger.info(str(update.message.chat.id) + " " + update.message.text)
+        print str(update.message.chat.id) + " " + update.message.text
+        if   update.message.text == '/start':
             self.handleStart(update)
-        elif update.edited_message.text == '/help':
+        elif update.message.text == '/help':
             self.handleHelp(update)
-        elif update.edited_message.text == '/login':
+        elif update.message.text == '/login':
             self.handleLogin(update)
-        elif update.edited_message.text == '/logout':
+        elif update.message.text == '/logout':
             self.handleLogout(update)
-        elif update.edited_message.text == '/status':
+        elif update.message.text == '/status':
             self.handleStatus(update)
-        elif update.edited_message.text == '/photo':
+        elif update.message.text == '/photo':
             self.handlePhoto(update)
-        elif update.edited_message.text == '/video':
+        elif update.message.text == '/video':
             self.handleVideo(update)
-        elif update.edited_message.text == '/list':
+        elif update.message.text == '/list':
             self.handleList(update)
-        elif update.edited_message.text == '/notification':
+        elif update.message.text == '/notification':
             self.handleNotification(update)
-        elif update.edited_message.text == '/restart':
+        elif update.message.text == '/restart':
             self.handleExit(update)
         else:
             self.handleMessage(update)
@@ -205,25 +208,25 @@ class TelegramBot (threading.Thread):
             self.doProcessEcho(update)
 
     def handleStart(self, update):
-        self.login[update.edited_message.chat.id] = 0
+        self.login[update.message.chat.id] = 0
         self.startProcess (TelegramBot.START)
-        update.edited_message.reply_text(self.tr._("Welcome to the the world's smartest motion tracker.") + self.tr._("If you need support just enter /help"))
+        update.message.reply_text(self.tr._("Welcome to the the world's smartest motion tracker.") + self.tr._("If you need support just enter /help"))
 
     def handleStatus(self, update):
         if self.isLoggedIn(update):
             self.startProcess (TelegramBot.START)
-            update.edited_message.reply_text(self.tr._("Bot is up and running since ") + str(self.starttime))
+            update.message.reply_text(self.tr._("Bot is up and running since ") + str(self.starttime))
             for key,values in self.chats.iteritems():
                 chatMessage = ""
                 for valueskey,valuesvalue in values.iteritems():
                     chatMessage = chatMessage + "\r\n" + str(valueskey) + ":= " + str(valuesvalue)
-                update.edited_message.reply_text(self.tr._("Chat") + " " + str(key) + chatMessage)
+                update.message.reply_text(self.tr._("Chat") + " " + str(key) + chatMessage)
         else:
             self.loginRequred(update)
 
 
     def handleHelp(self, update):
-        update.edited_message.reply_text(self.tr._("I can help youe with your motion sensor.") + "\r\n" +
+        update.message.reply_text(self.tr._("I can help youe with your motion sensor.") + "\r\n" +
                                   self.tr._("You can control me by sending these commands:") + "\r\n" +
                                   self.tr._("/login - You have to login before you can use me") + "\r\n" + 
                                   self.tr._("/logout - Logout from the motion sensor") + "\r\n" + 
@@ -252,15 +255,15 @@ class TelegramBot (threading.Thread):
         
     def handlePhoto(self, update):
         if self.isLoggedIn(update):
-            update.edited_message.reply_text(self.tr._("Please wait a moment until the photo is taken"))
-            self.camThread.takePhoto(update.edited_message.chat.id)
+            update.message.reply_text(self.tr._("Please wait a moment until the photo is taken"))
+            self.camThread.takePhoto(update.message.chat.id)
         else:
             self.loginRequred(update)
 
     def handleVideo(self, update):
         if self.isLoggedIn(update):
-            update.edited_message.reply_text(self.tr._("Please wait a moment. Video capturing will be performed"))
-            self.camThread.takeVideo(update.edited_message.chat.id)
+            update.message.reply_text(self.tr._("Please wait a moment. Video capturing will be performed"))
+            self.camThread.takeVideo(update.message.chat.id)
         else:
             self.loginRequred(update)
 
@@ -271,7 +274,7 @@ class TelegramBot (threading.Thread):
             no_key  = telegram.KeyboardButton(text=self.tr._("No"))
             yes_no_keyboard = [[ yes_key, no_key ]]
             reply_markup = telegram.ReplyKeyboardMarkup(yes_no_keyboard)
-            self.bot.send_message(chat_id=update.edited_message.chat.id,
+            self.bot.send_message(chat_id=update.message.chat.id,
                                  text=self.tr._("Do you want to get notified in case of motion detection?"),
                                  reply_markup=reply_markup)
         else:
@@ -287,7 +290,7 @@ class TelegramBot (threading.Thread):
 
     def handleLogin(self, update):
         self.startProcess (TelegramBot.LOGIN)
-        update.edited_message.reply_text(self.tr._("Enter your password:"))
+        update.message.reply_text(self.tr._("Enter your password:"))
 
     def handleLogout(self, update):
         if self.isLoggedIn(update):
@@ -296,15 +299,15 @@ class TelegramBot (threading.Thread):
             no_key  = telegram.KeyboardButton(text=self.tr._("No"))
             yes_no_keyboard = [[ yes_key, no_key ]]
             reply_markup = telegram.ReplyKeyboardMarkup(yes_no_keyboard)
-            self.bot.send_message(chat_id=update.edited_message.chat.id,
+            self.bot.send_message(chat_id=update.message.chat.id,
                                  text=self.tr._("Do you want to logout?"),
                                  reply_markup=reply_markup)
         else:
-            update.edited_message.reply_text(self.tr._("You are not logged in. You don't need to logout."))
+            update.message.reply_text(self.tr._("You are not logged in. You don't need to logout."))
 
     def handleExit(self, update):
         if self.isLoggedIn(update):
-            update.edited_message.reply_text(self.tr._("Restart will occur now."))
+            update.message.reply_text(self.tr._("Restart will occur now."))
             self.bot.get_updates( offset=self.offset, timeout=1, network_delay=1)
             self.running = 0
             self.pirThread.quit()
@@ -324,7 +327,7 @@ class TelegramBot (threading.Thread):
             section_keyboard[row].append(section_key)
             row = (row + 1) % 2
         reply_markup = telegram.ReplyKeyboardMarkup(section_keyboard)
-        self.bot.send_message(chat_id=update.edited_message.chat.id,
+        self.bot.send_message(chat_id=update.message.chat.id,
                               text=message,
                               reply_markup=reply_markup)
 
@@ -338,11 +341,11 @@ class TelegramBot (threading.Thread):
         return self.config.has_section(section) 
 
     def isLoggedIn(self, update):
-        if update.edited_message.chat.id in self.login and self.login[update.edited_message.chat.id] == 1:
+        if update.message.chat.id in self.login and self.login[update.message.chat.id] == 1:
             return 1
         else:
             return 0
 
     def loginRequred(self, update):
-        update.edited_message.reply_text(self.tr._("Login required. Please /login first."))
+        update.message.reply_text(self.tr._("Login required. Please /login first."))
 
