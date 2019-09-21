@@ -10,6 +10,9 @@ apt-get install jq
 # A Portable Foreign Function Interface Library
 apt-get install libffi-dev
 
+# Video converter
+apt-get install ffmpeg
+
 # Other dependencies needed for python-telegram-bot python lib
 apt-get install build-essential libssl-dev libffi-dev python-dev
 
