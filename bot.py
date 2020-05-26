@@ -1,5 +1,4 @@
 import traceback
-import pdb
 import subprocess
 import threading
 import telegram
@@ -55,7 +54,7 @@ class TelegramBot (threading.Thread):
         for chat_id,values in self.chats.iteritems():
             sendNotification = 0
             for valueskey,valuesvalue in values.iteritems():
-                if (valueskey == "notification") and (valuesvalue == "yes"):
+                if (valueskey == "notification") and (valuesvalue == "ja"):
                     lastNotification = self.chats[chat_id]['send_notification']
                     durationSinceLastNotificaton = now - lastNotification
                     if durationSinceLastNotificaton > self.minNotificationIntervall:
@@ -74,7 +73,6 @@ class TelegramBot (threading.Thread):
                 updates = self.bot.get_updates( offset=self.offset)
                 for update in updates:
                     now = date.today()
-                    pdb.set_trace()
                     self.chats[update.message.chat.id]['lastupdate'] = now
                     self.chats[update.message.chat.id]['user'] = update.effective_user.first_name
                     self.bot.send_chat_action( chat_id=update.message.chat_id,
@@ -86,7 +84,7 @@ class TelegramBot (threading.Thread):
                         self.handleUpdate(update)
             except:
                 self.logger.error(str(sys.exc_info()))
-                print(traceback.format_exc())
+                #print(traceback.format_exc())
         print "Exiting " + self.name
 
 ###############################################################################
